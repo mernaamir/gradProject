@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gradprojec/enterresult.dart';
 import 'package:gradprojec/facuilites.dart';
 import 'package:gradprojec/mainpage.dart';
@@ -26,24 +27,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-
-
-      home: splashScreen(),
-   routes: {
-     "home": (context) => home(),
-     "main": (context) => mainpage(),
-     "university":(context)=>university(),
-     "faculty":(context)=>faculty(),
-     "result":(context)=>result(),
-     "department":(context)=>department(),
-   },
-        theme: ThemeData(
-
-
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        )
+    return ScreenUtilInit(
+      designSize: const Size(337, 699),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+      
+      
+        home: splashScreen(),
+         routes: {
+       "home": (context) => home(),
+       "main": (context) => mainpage(),
+       "university":(context)=>university(),
+       "faculty":(context)=>faculty(),
+       "result":(context)=>result(),
+       "department":(context)=>department(),
+         },
+          theme: ThemeData(
+      
+      
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          )
+      ),
     );
   }
 }
