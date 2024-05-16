@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
        "university":(context)=>university(),
        faculty.routeName:(context)=>faculty(),
        "result":(context)=>result(),
-       "department":(context)=>department(),
+       department.routeName:(context)=>department(),
          },
           theme: ThemeData(
       

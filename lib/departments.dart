@@ -1,18 +1,37 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'facuilites.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class department extends StatelessWidget {
+class department extends StatefulWidget {
   static const String routeName = "department";
 
-  department({super.key});
+  const department({super.key});
 
   @override
+  State<department> createState() => _universityState();
+}
+
+class _universityState extends State<department> {
+  List<QueryDocumentSnapshot> facdata = [];
+
+
+  void initState() {
+    super.initState();
+    getData();
+  }
+  getData() async {
+    QuerySnapshot querySnapshot =
+    await FirebaseFirestore.instance.collection("[Faculities]").get();
+    facdata.addAll(querySnapshot.docs);
+  }
+
+  @override
+
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-
       body: Stack(
         children: [
           Container(
@@ -29,7 +48,7 @@ class department extends StatelessWidget {
                       bottom: 150,
                       right: 20,
                       child: Text(
-                        "قائمة الاقسام",
+                        "قائمة الكليات",
                         style: TextStyle(fontSize: 28, color: Colors.white),
                       ),
                     ),
@@ -37,13 +56,15 @@ class department extends StatelessWidget {
                         left: 10,
                         top: 30,
                         child: InkWell(
-                            onTap: (){
+                            onTap: () {
                               Navigator.pop(context);
                             },
-                            child: Icon(Icons.arrow_back,size: 30,color: Colors.white,))
-                    ),
-                    // Icon(Icons.arrow_back)
-
+                            child: Icon(
+                              Icons.arrow_back,
+                              size: 30,
+                              color: Colors.white,
+                            ))),
+// Icon(Icons.arrow_back)
                   ],
                 ),
               ],
@@ -60,42 +81,69 @@ class department extends StatelessWidget {
               ),
               height: 650,
               child: Container(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: InkWell(
-                          onTap: (){
-                          },
-                          child: Text(
-                            "قسم الرياضيات",
-                            style: TextStyle(
-                                fontSize: 30,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
+                child: Expanded(
+                    child: FutureBuilder(
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                          minimumSize: Size(300, 60),
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text("Something went errorrrrrrrrr"),
+                          );
+                        }
+                        if (facdata.isEmpty) {
+                          return Center(child: Text("List is empty",style: TextStyle(fontSize: 50),));
+                        }
+                        return getList();
+                      },
+                      future: getData(),
+                    )),
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  Widget getList() {
+    ListView myList = new ListView.separated(
+        separatorBuilder: (context, index) => SizedBox(
+          height: 1,
+        ),
+        itemCount: facdata.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: InkWell(
+              onTap: (){
+                // Navigator.pushNamed(context, faculty.routeName);
+
+              },
+              child: Container(
+                width: 265.w,
+                height: 95.h,
+                decoration: BoxDecoration(
+                  color: Color(0xff36265D),
+                  borderRadius: BorderRadius.circular(23),
+                ),
+                child: Center(
+                  child: Text(
+                    "${facdata[index]['name']}",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+    return myList;
   }
 }
