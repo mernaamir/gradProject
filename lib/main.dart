@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
        "home": (context) => home(),
        "main": (context) => mainpage(),
        "university":(context)=>university(),
-       "faculty":(context)=>faculty(),
+       faculty.routeName:(context)=>faculty(),
        "result":(context)=>result(),
        "department":(context)=>department(),
          },

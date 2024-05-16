@@ -17,15 +17,19 @@ class university extends StatefulWidget {
 class _universityState extends State<university> {
   List<QueryDocumentSnapshot> data = [];
 
+
+  void initState() {
+    super.initState();
+    getData();
+  }
   getData() async {
     QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("Unversities").get();
+    await FirebaseFirestore.instance.collection("Unversities").get();
     data.addAll(querySnapshot.docs);
-
-
   }
 
   @override
+
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -116,20 +120,26 @@ class _universityState extends State<university> {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Container(
-              width: 265.w,
-              height: 95.h,
-              decoration: BoxDecoration(
-                color: Color(0xff36265D),
-                borderRadius: BorderRadius.circular(23),
-              ),
-              child: Center(
-                child: Text(
-                  "${data[index]['name']}",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700),
+            child: InkWell(
+              onTap: (){
+                Navigator.pushNamed(context, faculty.routeName);
+
+              },
+              child: Container(
+                width: 265.w,
+                height: 95.h,
+                decoration: BoxDecoration(
+                  color: Color(0xff36265D),
+                  borderRadius: BorderRadius.circular(23),
+                ),
+                child: Center(
+                  child: Text(
+                    "${data[index]['name']}",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700),
+                  ),
                 ),
               ),
             ),
