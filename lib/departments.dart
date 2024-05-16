@@ -48,7 +48,7 @@ class _universityState extends State<department> {
                       bottom: 150,
                       right: 20,
                       child: Text(
-                        "قائمة الكليات",
+                        "قائمة الاقسام",
                         style: TextStyle(fontSize: 28, color: Colors.white),
                       ),
                     ),
