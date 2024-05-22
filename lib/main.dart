@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gradprojec/enterresult.dart';
 import 'package:gradprojec/facuilites.dart';
 import 'package:gradprojec/mainpage.dart';
@@ -10,9 +10,7 @@ import 'departments.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
@@ -27,30 +25,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(337, 699),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-      
-      
-        home: splashScreen(),
-         routes: {
-       "home": (context) => home(),
-       "main": (context) => mainpage(),
-       "university":(context)=>university(),
-       faculty.routeName:(context)=>faculty(),
-       "result":(context)=>result(),
-       department.routeName:(context)=>department(),
-         },
-          theme: ThemeData(
-      
-      
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-          )
-      ),
+    return MaterialApp(
+      locale: const Locale('ar'),
+      debugShowCheckedModeBanner: false,
+      supportedLocales: const [Locale('ar')],
+      localizationsDelegates: const [
+        GlobalWidgetsLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        ...GlobalMaterialLocalizations.delegates,
+      ],
+      theme: ThemeData(visualDensity: VisualDensity.adaptivePlatformDensity),
+      home: splashScreen(),
+      routes: {
+        "home": (context) => home(),
+        "main": (context) => mainpage(),
+        "university": (context) => const University(),
+        Faculty.routeName: (context) => const Faculty(),
+        "result": (context) => result(),
+        department.routeName: (context) => const department(),
+      },
     );
   }
 }
-

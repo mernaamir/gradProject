@@ -15,80 +15,61 @@ class _departmentState extends State<department> {
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
 
     return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Image.asset(
-                      "assets/images/university.png",
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                    Positioned(
-                      bottom: 150,
-                      right: 20,
-                      child: Text(
-                        "قائمة الاقسام",
-                        style: TextStyle(fontSize: 28, color: Colors.white),
-                      ),
-                    ),
-                    Positioned(
-                      left: 10,
-                      top: 30,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.arrow_back,
-                          size: 30,
-                          color: Colors.white,
+      appBar: AppBar(
+        title: const Text(
+          "قائمة الاقسام",
+          style: TextStyle(
+            fontSize: 28,
+            color: Colors.black,
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Image.asset(
+                "assets/images/university.png",
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Container(
+                  height: 300,
+                  width: double.maxFinite,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'الأسم: ${args['name']}',
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                      ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Grade: ${args['grade']}',
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'Description: ${args['description']}',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: Colors.white,
-              ),
-              height: 300,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Name: ${args['name']}',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Grade: ${args['grade']}',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      'Description: ${args['description']}',
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

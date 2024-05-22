@@ -1,111 +1,90 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gradprojec/departments.dart';
 
-class faculty extends StatefulWidget {
+class Faculty extends StatefulWidget {
   static const String routeName = "faculty";
 
-  const faculty({super.key});
+  const Faculty({super.key});
 
   @override
-  State<faculty> createState() => _universityState();
+  State<Faculty> createState() => _FacultyState();
 }
 
-class _universityState extends State<faculty> {
+class _FacultyState extends State<Faculty> {
   List<QueryDocumentSnapshot> facdata = [];
-bool isLoading=true;
+  bool isLoading = true;
+  bool hasError = false;
+
+  @override
   void initState() {
-    super.initState();
     getData();
+    super.initState();
   }
 
- Future<void> getData() async {
-    QuerySnapshot querySnapshot =
-        await FirebaseFirestore.instance.collection("Faculities").get();
-
-    facdata.addAll(querySnapshot.docs);
-    isLoading=false;
-
+  Future<void> getData() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection("Faculities").get();
+      facdata = querySnapshot.docs;
+      setState(() => isLoading = false);
+    } catch (e) {
+      setState(() => hasError = true);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Image.asset(
-                      "assets/images/university.png",
-                      width: double.infinity,
-                      fit: BoxFit.cover,
+          Column(
+            children: [
+              Stack(
+                children: [
+                  Image.asset(
+                    "assets/images/university.png",
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                  const Positioned(
+                    bottom: 150,
+                    right: 20,
+                    child: Text(
+                      "قائمة الكليات",
+                      style: TextStyle(fontSize: 28, color: Colors.white),
                     ),
-                    Positioned(
-                      bottom: 150,
-                      right: 20,
-                      child: Text(
-                        "قائمة الكليات",
-                        style: TextStyle(fontSize: 28, color: Colors.white),
+                  ),
+                  Positioned(
+                    left: 10,
+                    top: 30,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(
+                        Icons.arrow_back,
+                        size: 30,
+                        color: Colors.white,
                       ),
                     ),
-                    Positioned(
-                        left: 10,
-                        top: 30,
-                        child: InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Icon(
-                              Icons.arrow_back,
-                              size: 30,
-                              color: Colors.white,
-                            ))),
-// Icon(Icons.arrow_back)
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                  // Icon(Icons.arrow_back)
+                ],
+              ),
+            ],
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
+          Positioned.fill(
             child: Container(
+              height: 650,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50),
                 color: Colors.white,
               ),
-              height: 650,
-              child: Container(
-                child: Expanded(
-                    child: FutureBuilder(
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-
-                    if (snapshot.hasError) {
-                      return const Center(
-                        child: Text("Something went errorrrrrrrrr"),
-                      );
-                    }
-                    if (facdata.isEmpty) {
-                      return Text("List is empty");
-                    }
-                    return getList();
-                  },
-                  future: getData(),
-                )),
-              ),
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : hasError
+                      ? const Center(child: Text("Something went wrong"))
+                      : facdata.isEmpty
+                          ? const Text("List is empty")
+                          : getList(),
             ),
           )
         ],
@@ -114,53 +93,46 @@ bool isLoading=true;
   }
 
   Widget getList() {
-    ListView myList = new ListView.separated(
-        separatorBuilder: (context, index) => SizedBox(
-              height: 1,
-            ),
-        itemCount: facdata.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: InkWell(
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  department.routeName,
-                  arguments: {
-                    Navigator.pushNamed(
-                      context,
-                      department.routeName,
-                      arguments: {
-                        'name': facdata[index]['name'],
-                        'grade': facdata[index]['grade'],
-                        'description': facdata[index]['description'],
-                      },
-                    )
-                  },
-                );
-                // Navigator.pushNamed(context, department.routeName);
-              },
-              child: Container(
-                width: 265.w,
-                height: 95.h,
-                decoration: BoxDecoration(
-                  color: Color(0xff36265D),
-                  borderRadius: BorderRadius.circular(23),
-                ),
-                child: Center(
-                  child: Text(
-                    "${facdata[index]['name']}",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700),
+    ListView myList = ListView.builder(
+      itemCount: facdata.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: InkWell(
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                department.routeName,
+                arguments: {
+                  'name': facdata[index]['name'],
+                  'grade': facdata[index]['grade'],
+                  'description': facdata[index]['description'],
+                },
+              );
+              // Navigator.pushNamed(context, department.routeName);
+            },
+            child: Container(
+              width: 265,
+              height: 95,
+              decoration: BoxDecoration(
+                color: const Color(0xff36265D),
+                borderRadius: BorderRadius.circular(23),
+              ),
+              child: Center(
+                child: Text(
+                  "${facdata[index]['name']}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
     return myList;
   }
 }
