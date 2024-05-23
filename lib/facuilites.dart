@@ -16,20 +16,22 @@ class faculty extends StatefulWidget {
 
 class _universityState extends State<faculty> {
   List<QueryDocumentSnapshot> facdata = [];
-
-
+bool isLoading=true;
   void initState() {
     super.initState();
     getData();
   }
-  getData() async {
+
+ Future<void> getData() async {
     QuerySnapshot querySnapshot =
-    await FirebaseFirestore.instance.collection("Faculities").get();
+        await FirebaseFirestore.instance.collection("Faculities").get();
+
     facdata.addAll(querySnapshot.docs);
+    isLoading=false;
+
   }
 
   @override
-
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
@@ -84,25 +86,25 @@ class _universityState extends State<faculty> {
               child: Container(
                 child: Expanded(
                     child: FutureBuilder(
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-                        if (snapshot.hasError) {
-                          return const Center(
-                            child: Text("Something went errorrrrrrrrr"),
-                          );
-                        }
-                        if (facdata.isEmpty) {
-                          return Text("List is empty");
-                        }
-                        return getList();
-                      },
-                      future: getData(),
-                    )),
+                    if (snapshot.hasError) {
+                      return const Center(
+                        child: Text("Something went errorrrrrrrrr"),
+                      );
+                    }
+                    if (facdata.isEmpty) {
+                      return Text("List is empty");
+                    }
+                    return getList();
+                  },
+                  future: getData(),
+                )),
               ),
             ),
           )
@@ -114,16 +116,30 @@ class _universityState extends State<faculty> {
   Widget getList() {
     ListView myList = new ListView.separated(
         separatorBuilder: (context, index) => SizedBox(
-          height: 1,
-        ),
+              height: 1,
+            ),
         itemCount: facdata.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.all(20.0),
             child: InkWell(
-              onTap: (){
-                Navigator.pushNamed(context, department.routeName);
-
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  department.routeName,
+                  arguments: {
+                    Navigator.pushNamed(
+                      context,
+                      department.routeName,
+                      arguments: {
+                        'name': facdata[index]['name'],
+                        'grade': facdata[index]['grade'],
+                        'description': facdata[index]['description'],
+                      },
+                    )
+                  },
+                );
+                // Navigator.pushNamed(context, department.routeName);
               },
               child: Container(
                 width: 265.w,
